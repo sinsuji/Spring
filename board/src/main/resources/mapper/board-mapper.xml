@@ -56,8 +56,14 @@
 		)
 	</insert>
 	
-	<delete id="deleteBoard">
+	<delete id="deleteBoard" parameterType="int">
 		DELETE FROM board
 		WHERE board_no = #{boardNo}
 	</delete>
+	
+	<update id="updateBoard" parameterType="BoardVO">
+		UPDATE board
+		SET content = #{content}
+		WHERE board_no = #{boardNo}
+	</update>
 </mapper>

@@ -14,6 +14,23 @@ public class BoardMapperTest {
 	@Autowired BoardMapper mapper;
 	
 	@Test
+	public void 게시글수정() {
+		BoardVO vo = BoardVO.builder()
+				   	 .boardNo(24)
+					 .content("얼른 끝내고 잡시다요")
+					 .build();
+		int result = mapper.updateBoard(vo);
+		System.out.println("수정되었습니다.");
+	}
+	
+	// @Test
+	public void 게시글삭제() {
+		int boardNo = 21;
+		int result = mapper.deleteBoard(boardNo);
+		System.out.println("삭제되었습니다.");
+	}
+	
+	// @Test
 	public void 게시글등록() {
 		BoardVO vo = BoardVO.builder()
 					// .boardNo(20)

@@ -31,7 +31,7 @@
 		<result property="phone" column="phone_number"/>
 	</resultMap>
 	
-	<select id="getEmpList" resultMap="empResultMap">
+	<select id="getEmpList" resultType="EmpVO">
 	SELECT * FROM ( SELECT rownum as rn, a.* FROM (	
 		
 		SELECT EMPLOYEE_ID
@@ -44,10 +44,11 @@
 			   , SALARY
 			   , COMMISSION_PCT
 			   , MANAGER_ID
-			   , DEPARTMENT_ID 
+			   , DEPARTMENT_ID
+			   , PHOTO 
 		 FROM employees e 
 		 <include refid="condition"></include>
- 		ORDER BY first_name
+ 		ORDER BY employee_id desc
 		 
 	) a WHERE rownum <![CDATA[<=]]> #{svo.end} ) b WHERE rn >= #{svo.start} 
 	</select>
@@ -74,7 +75,8 @@
 							  , JOB_ID
 							  <if test="salary != null">, SALARY</if>
 							  , MANAGER_ID
-							  , DEPARTMENT_ID)
+							  , DEPARTMENT_ID
+							  , PHOTO)
 		VALUES (
 				#{employeeId}
 				, #{firstName}
@@ -85,6 +87,7 @@
 				<if test="salary != null">, #{salary}</if>
 				, #{managerId}
 				, #{departmentId}
+				, #{photo}
 				)
 	</insert>
 	
@@ -102,4 +105,10 @@
 		 WHERE e.department_id IS NOT NULL
 		 GROUP BY e.department_id, d.department_name
 	</select>
+	
+	<update id="updateEmp">
+		UPDATE employees
+		SET email = #{email}
+		WHERE employee_id = #{employeeId}
+	</update>
 </mapper>

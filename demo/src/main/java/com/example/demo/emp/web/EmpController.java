@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.emp.EmpVO;
+import com.example.demo.emp.SearchVO;
 import com.example.demo.emp.mapper.EmpMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -56,8 +58,9 @@ public class EmpController {
 	
 	// forward : 모델에 담아서 모델을 가지고 넘어가면 됨
 	@RequestMapping("/empList")
-	public String empList(Model model){ 
-		model.addAttribute("empList", mapper.getEmpList(null, null)); // model.addAttribute -> req.setAttributte와 같음
+	public String empList(Model model, EmpVO vo, SearchVO svo){ 
+		model.addAttribute("companyName", "<i><font color='red'>예담주식회사</font></i>");
+		model.addAttribute("empList", mapper.getEmpList(vo, svo)); // model.addAttribute -> req.setAttributte와 같음
 		return "empList";
 	}
 	
@@ -73,6 +76,20 @@ public class EmpController {
 	@PostMapping("/insert2")
 	public ResponseEntity<EmpVO> insert2(EmpVO vo) {
 		return new ResponseEntity<>(vo, HttpStatus.OK);
+	}
+	
+	// @PathVariable
+	@GetMapping("/update/{empId}")
+	public String update(@PathVariable int empId) {
+		System.out.println(empId);
+		return "index";
+	}
+	
+	// queryString
+	@GetMapping("/delete")
+	public String delete(int employeeId, String name) {
+		System.out.println(employeeId + ":" + name);
+		return "index";
 	}
 	
 	@GetMapping("/")

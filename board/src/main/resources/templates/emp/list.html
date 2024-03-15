@@ -12,6 +12,7 @@
 			<th>first_name</th>
 			<th>last_name</th>
 			<th>hire_date</th>
+			<th>email</th>
 			<th>photo</th>
 		</tr>
 		<tr th:each="emp : ${empList}">
@@ -19,6 +20,7 @@
 			<td th:text="${emp.firstName}"></td>
 			<td th:text="${emp.lastName}"></td>
 			<td th:text="${emp.hireDate}"></td>
+			<td th:text="${emp.email}"></td>
 			<td th:text="${emp.photo}"></td>
 		</tr>
 	</table>

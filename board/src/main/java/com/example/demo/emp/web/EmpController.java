@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,13 +48,15 @@ public class EmpController {
 	}
 	
 	// 수정페이지 이동
-	@GetMapping("/emp/update")
-	public void update() {}
+	@GetMapping("/emp/update/{employeeId}")
+	public String update(@PathVariable int employeeId, Model model) {
+		model.addAttribute("emp", mapper.getEmpInfo(employeeId));
+		return "emp/update";
+	}
 	
 	// 수정처리
 	@PostMapping("/update")
-	public String update(@ModelAttribute("emp") EmpVO vo) {
-		System.out.println(vo);
+	public String update(EmpVO vo) {
 		mapper.updateEmp(vo);
 		return "redirect:/emp/list";
 	}

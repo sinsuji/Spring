@@ -4,13 +4,13 @@
 <mapper namespace="com.example.demo.emp.mapper.EmpMapper">
 	<sql id="condition">
 		<where> 
-			<if test="vo.departmentId != null">
+			<if test="vo.departmentId != null and vo.departmentId != ''">
 				  department_id = #{vo.departmentId}
 			</if>
-			<if test="vo.firstName != null">
-			  AND first_name = #{vo.firstName}
+			<if test="vo.firstName != null and vo.firstName != ''">
+			  AND first_name LIKE '%' || #{vo.firstName} || '%'
 			</if>
-			<if test="vo.managerId != null">
+			<if test="vo.managerId != null and vo.managerId != ''">
 			  AND manager_id = #{vo.managerId}
 			</if>
 			<if test="svo.employeeIds != null">
@@ -30,6 +30,12 @@
 		<result property="firstName" column="first_name"/>
 		<result property="phone" column="phone_number"/>
 	</resultMap>
+	
+	<select id="getCount" resultType="long"> <!-- int보다 데이터가 많다면 long -->
+		SELECT count(*)
+		FROM employees
+		<include refid="condition"></include>
+	</select>
 	
 	<select id="getEmpList" resultMap="empResultMap">
 	SELECT * FROM ( SELECT rownum as rn, a.* FROM (	

@@ -16,4 +16,7 @@ public interface EmpMapper {
 	int insertEmp(EmpVO empVO); // insert에 들어올 수 있는 값은 int 아니면 void
 	int deleteEmp(int employeeId);
 	List<Map<String, Object>> getStat();
+	
+	// @Select("SELECT count(*) FROM employees")
+	public long getCount(EmpVO vo, SearchVO svo);
 }

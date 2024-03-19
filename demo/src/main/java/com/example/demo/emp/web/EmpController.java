@@ -1,6 +1,7 @@
 package com.example.demo.emp.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import com.example.demo.common.Paging;
 import com.example.demo.emp.EmpVO;
 import com.example.demo.emp.SearchVO;
 import com.example.demo.emp.mapper.EmpMapper;
+import com.example.demo.emp.service.EmpService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,8 +31,28 @@ import lombok.RequiredArgsConstructor;
 public class EmpController {
 	
 	// 생성자주입 
-	final EmpMapper mapper; // 의존성주입 (DI dependency Injection) - 객체관리를 스프링이 알아서 다해줌
+	final EmpService empService; // 의존성주입 (DI dependency Injection) - 객체관리를 스프링이 알아서 다해줌
 	
+	// forward : 모델에 담아서 모델을 가지고 넘어가면 됨
+	@RequestMapping("/empList")
+	public String empList(Model model, EmpVO vo, SearchVO svo, Paging pvo){
+		
+		// 페이징처리
+		pvo.setPageUnit(5); // 한페이지에 보여지는 데이터수
+		pvo.setPageSize(3); // 페이지번호
+		svo.setStart(pvo.getFirst());
+		svo.setEnd(pvo.getLast());
+		
+		Map<String, Object> map = empService.getEmpList(vo, svo);
+		
+		pvo.setTotalRecord((Long)map.get("count"));
+		model.addAttribute("paging", pvo); // 생략해도 페이징은 넘어감
+		
+		// 목록조회
+		// model.addAttribute("companyName", "<i><font color='red'>예담주식회사</font></i>");
+		model.addAttribute("empList", map.get("data")); // model.addAttribute -> req.setAttributte와 같음
+		return "empList";
+	}
 	
 	@PostMapping("/insert")
 	public ModelAndView insert(@ModelAttribute("emp") EmpVO vo) {
@@ -45,35 +67,6 @@ public class EmpController {
 		return mv;
 	}
 	
-	@RequestMapping("/ajaxEmp")
-	@ResponseBody // 모든 결과값을 ajax로 바꿔서 넘어감, JOSN으로 만들어줌
-	public List<EmpVO> ajaxEmp() {
-		return mapper.getEmpList(null, null);
-	}
-	
-	@RequestMapping("/empResult")
-	public String result() {
-		return "result";
-	}
-	
-	
-	// forward : 모델에 담아서 모델을 가지고 넘어가면 됨
-	@RequestMapping("/empList")
-	public String empList(Model model, EmpVO vo, SearchVO svo, Paging pvo){
-		
-		// 페이징처리
-		pvo.setPageUnit(5); // 한페이지에 보여지는 데이터수
-		pvo.setPageSize(3); // 페이지번호
-		svo.setStart(pvo.getFirst());
-		svo.setEnd(pvo.getLast());	
-		pvo.setTotalRecord(mapper.getCount(vo, svo));
-		model.addAttribute("paging", pvo); // 생략해도 페이징은 넘어감
-		
-		// 목록조회
-		// model.addAttribute("companyName", "<i><font color='red'>예담주식회사</font></i>");
-		model.addAttribute("empList", mapper.getEmpList(vo, svo)); // model.addAttribute -> req.setAttributte와 같음
-		return "empList";
-	}
 	
 	// redirect : 완전히 다른 페이지로 가야할 경우
 	@PostMapping("/insert3")
@@ -92,7 +85,7 @@ public class EmpController {
 	// @PathVariable
 	@GetMapping("/info/{empId}")
 	public String info(@PathVariable int empId, Model model) {
-		model.addAttribute("emp", mapper.getEmpInfo(empId));
+		model.addAttribute("emp", empService.getEmpInfo(empId));
 		return "empInfo";
 	}
 	
@@ -106,8 +99,8 @@ public class EmpController {
 	// queryString
 	@GetMapping("/delete")
 	public String delete(int employeeId, String name) {
-		System.out.println(employeeId + ":" + name);
-		return "index";
+		empService.deleteEmp(employeeId);
+		return "redirect:empList";
 	}
 	
 	@GetMapping("/")

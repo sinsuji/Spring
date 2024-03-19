@@ -39,8 +39,6 @@
 		bno<input name="bno">
 		<br>reply<input name="reply">
 		<br>replyer<input name="replyer">
-		<br>replyDate<input name="replyDate">
-		<br>updateDate<input name="updateDate">
 		<br><button type="button" onclick="saveReq()">등록</button>
 	</form>
 	
@@ -63,6 +61,7 @@
 	
 	// 리스트 응답
 	function listRes(res) {
+		replylist.innerHTML = "";
 		for( obj of res ) {
 			let i = 0;
 			let newTag = `<tr>
@@ -84,10 +83,8 @@
 		const bno=frm.bno.value;
 		const reply=frm.reply.value;
 		const replyer=frm.replyer.value;
-		const replyDate=frm.replyDate.value;
-		const updateDate=frm.updateDate.value;
-		let param = {bno, reply, replyer, replyDate, updateDate }
-		fetch("/ajax/emp",{
+		let param = {bno, reply, replyer}
+		fetch("/ajax/reply",{
 			method : "post",
 			headers: {
 			      "Content-Type": "application/json",

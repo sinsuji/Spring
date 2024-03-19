@@ -1,6 +1,8 @@
 package com.example.demo.emp.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +16,12 @@ import com.example.demo.common.Paging;
 import com.example.demo.emp.EmpVO;
 import com.example.demo.emp.SearchVO;
 import com.example.demo.emp.mapper.EmpMapper;
+import com.example.demo.emp.service.EmpService;
 
 @RestController
 public class EmpRestController {
 	
-	@Autowired EmpMapper mapper;
+	@Autowired EmpService service;
 	
 	// @RestController에서 view 페이지로 넘겨야 할 경우 ModelAndView 사용
 	// 리스트 페이지이동
@@ -32,10 +35,14 @@ public class EmpRestController {
 	// 사원리스트 데이터
 	@GetMapping("/ajax/empList")
 	// @ResponseBody // vo 객체를 JSON형식의 String으로 자동변환
-	public List<EmpVO> empList(EmpVO vo, SearchVO svo, Paging pvo) {
+	public Map<String, Object> empList(EmpVO vo, SearchVO svo, Paging pvo) {
 		svo.setStart(pvo.getFirst());
 		svo.setEnd(pvo.getLast());	
-		return mapper.getEmpList(vo, svo);
+		Map<String, Object> map = service.getEmpList(vo, svo);
+		pvo.setTotalRecord((Long)map.get("count"));
+		map.put("paging", pvo);
+		
+		return map;
 	}
 	
 //	@PostMapping("/ajax/emp")
@@ -49,13 +56,18 @@ public class EmpRestController {
 	@PostMapping("/ajax/emp")
 	public EmpVO save(@RequestBody EmpVO vo) {
 		System.out.println(vo);
-		mapper.insertEmp(vo);
+		service.insertEmp(vo);
 		return vo;
 	}
 	
 	@GetMapping("/ajax/emp/{empId}")
 	public EmpVO info(@PathVariable int empId) {
-		return mapper.getEmpInfo(empId);
+		return service.getEmpInfo(empId);
+	}
+	
+	@GetMapping("/ajax/empStat")
+	public List<Map<String, Object>> stat() {
+		return service.getStat();
 	}
 	
 }

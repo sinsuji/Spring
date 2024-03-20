@@ -54,20 +54,6 @@ public class EmpController {
 		return "empList";
 	}
 	
-	@PostMapping("/insert")
-	public ModelAndView insert(@ModelAttribute("emp") EmpVO vo) {
-		System.out.println(vo);
-		// mapper.insertEmp(vo);		
-		// 커맨드객체는 model에 추가
-		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("result");
-		mv.addObject("insertResult", "success");
-		mv.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		return mv;
-	}
-	
-	
 	// redirect : 완전히 다른 페이지로 가야할 경우
 	@PostMapping("/insert3")
 	public String insert3(EmpVO vo, RedirectAttributes rttr) {
@@ -80,6 +66,22 @@ public class EmpController {
 	@PostMapping("/insert2")
 	public ResponseEntity<EmpVO> insert2(EmpVO vo) {
 		return new ResponseEntity<>(vo, HttpStatus.OK);
+	}
+	
+	@GetMapping("/insert")
+	public void insert() {}
+	
+	@PostMapping("/insert")
+	public ModelAndView insert(@ModelAttribute("emp") EmpVO vo) {
+		System.out.println(vo);
+		empService.insertEmp(vo);		
+		// 커맨드객체는 model에 추가
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("home");
+		mv.addObject("insertResult", "success");
+		// mv.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		return mv;
 	}
 	
 	// @PathVariable

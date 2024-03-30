@@ -4,9 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>index</title>
 </head>
 <body>
-test
+	<div class="top">
+		<h3>도서대여관리</h3>
+	</div>
 </body>
 </html>
